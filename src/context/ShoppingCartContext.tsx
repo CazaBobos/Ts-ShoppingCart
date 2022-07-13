@@ -1,4 +1,6 @@
 import { createContext,ReactNode, useContext, useState } from "react";
+import ShoppingCart from "../components/ShoppingCart";
+import useSessionStorage from "../hooks/useSessionStorage"
 
 type CartItem = {
     id: number,
@@ -29,7 +31,9 @@ export function ShoppingCartProvider({children}:ShoppingCartProviderProps){
     const openCart = () => setIsOpen(true)
     const closeCart = () => setIsOpen(false)
 
-    const [cartItems,setCartItems] = useState<CartItem[]>([])
+    const [cartItems,setCartItems] = useSessionStorage<CartItem[]>(
+        "shopping-cart",[]
+    )
     const cartQuantity = cartItems.reduce((quantity,item) =>
         item.quantity + quantity,0
     )
@@ -83,6 +87,7 @@ export function ShoppingCartProvider({children}:ShoppingCartProviderProps){
             closeCart,
         }}>
             {children}
+            <ShoppingCart isOpen={isOpen}/>
         </ShoppingCartContext.Provider>
     )
 }
